@@ -1,0 +1,91 @@
+@startuml
+
+class Cargo {
+  - name: str
+  - weight: float
+  - volume: float
+  + __init__(name, weight, volume)
+}
+
+class Warehouse {
+  - name: str
+  - location: tuple
+  - cargo_list: List[Cargo]
+  + accept_cargo(cargo: Cargo): str
+  + deliver_cargo(cargo: Cargo): str
+  + cargo_availability(cargo: Cargo): bool
+}
+
+class Transport {
+  - name: str
+  - max_weight: float
+  - max_volume: float
+  - average_speed_kmh: float
+  - price_per_hour: float
+  + calculate_time(w1, w2): float
+  + calculate_cost(w1, w2): float
+  + can_transport(cargo: Cargo): bool
+}
+
+class Truck {
+  + __init__(...)
+}
+
+class Aircraft {
+  + __init__(...)
+}
+
+class Ship {
+  + __init__(...)
+}
+
+class Route {
+  - transport: Transport
+  - warehouse_from: Warehouse
+  - warehouse_to: Warehouse
+  - cargos: List[Cargo]
+  + add_cargo(cargo: Cargo)
+  + remove_cargo(cargo: Cargo)
+  + calculate_time(): float
+  + calculate_cost(): float
+  + validate(): bool
+  + is_execute(): bool
+  + execute(): dict
+}
+
+class LogisticsManager {
+  - transports: List[Transport]
+  + add_transport(transport: Transport)
+  + find_suitable_transport(cargos: List[Cargo]): Transport
+  + create_delivery(w_from, w_to, cargos): dict
+}
+
+class MultiRoute {
+  - routes: List[Route]
+  - status: str
+  + validate_chain(): bool
+  + calculate_total_time(): float
+  + calculate_total_cost(): float
+  + execute(): dict
+}
+
+Truck --|> Transport
+Aircraft --|> Transport
+Ship --|> Transport
+
+
+Warehouse o-- "*" Cargo : содержит
+Route --> "1" Transport : использует
+Route --> "1" Warehouse : из
+Route --> "1" Warehouse : в
+Route o-- "*" Cargo : перевозит
+
+LogisticsManager o-- "*" Transport : управляет
+LogisticsManager --> Route : создаёт
+
+MultiRoute *-- "*" Route : включает этапы
+
+
+@enduml
+
+
